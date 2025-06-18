@@ -50,15 +50,24 @@
     .notification {
       position: fixed;
       bottom: 20px;
-      left: 20px;
-      background-color: white;
-      color: black;
+      right: 20px;
+      background-color: #000;
+      color: #fff;
       padding: 15px 25px;
       border-radius: 8px;
+      border: 2px solid white;
       font-size: 1rem;
       opacity: 0;
       transform: translateY(30px);
       animation: fadeInNotif 1s forwards, fadeOutNotif 1s 3s forwards;
+    }
+
+    .notification.show {
+      animation: fadeInNotif 1s forwards;
+    }
+
+    .notification.hide {
+      animation: fadeOutNotif 1s forwards;
     }
 
     .patch-notes {
@@ -142,14 +151,48 @@
   <h1>Dragon Burn</h1>
   <p>Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
 
-  <div class="notification">Welcome, user!</div>
+  <div id="notification" class="notification">Welcome, user!</div>
 
   <div class="patch-notes">
     <h2>Patch Notes</h2>
     <ul>
-      <li>🔥 SOON!</li>
+      <li>🔥 SOON! </li>
     </ul>
   </div>
+
+  <script>
+    const messages = [
+      "Welcome, user!",
+      "💡 CS2 runs on the Source 2 engine for better performance.",
+      "👨‍💻 Developer is known as Solar!",
+      "👨‍💻 Developer for DragonBurn is known as ByteCorum!",
+      "🔥 CS2 uses sub-tick updates for smoother shooting.",
+      "🧠 This site was built with love and minimalism.",
+      "🎮 Dragon Burn aims for top-tier performance."
+    ];
+
+    let index = 0;
+    const notif = document.getElementById("notification");
+
+    function showNotification() {
+      notif.classList.remove("hide");
+      notif.textContent = messages[index];
+      notif.classList.add("show");
+
+      setTimeout(() => {
+        notif.classList.remove("show");
+        notif.classList.add("hide");
+      }, 3000);
+
+      index = (index + 1) % messages.length;
+    }
+
+    // Start showing new notifications every 6 seconds
+    setTimeout(() => {
+      showNotification();
+      setInterval(showNotification, 6000);
+    }, 4000);
+  </script>
 
 </body>
 </html>
