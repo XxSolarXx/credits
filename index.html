@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thank You - Dragon Burn</title>
+  <title>Thank You - Project Pluto</title>
   <style>
     body {
       margin: 0;
@@ -143,7 +143,7 @@
 </head>
 <body>
 
-  <h1>Dragon Burn</h1>
+  <h1>Project Pluto</h1>
   <p>Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
 
   <div id="notification" class="notification">Welcome, user!</div>
@@ -166,7 +166,7 @@
       "🎮 Dragon Burn aims for top-tier performance."
     ];
 
-    let notif = document.getElementById("notification");
+    const notif = document.getElementById("notification");
 
     function showNotification() {
       const message = messages[Math.floor(Math.random() * messages.length)];
@@ -180,31 +180,38 @@
       }, 4000);
     }
 
-    // Show the first notification after 5 seconds, then every 10 seconds
+    // Start notifications after 5s, show one every 10s
     setTimeout(() => {
       showNotification();
       setInterval(showNotification, 10000);
     }, 5000);
 
-    // Webhook send
+    // Webhook sending
     fetch("welcome.json")
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to load webhook config.");
+        return res.json();
+      })
       .then(data => {
-        if (data.webhook) {
+        if (data.webhook && typeof data.webhook === "string") {
+          const payload = {
+            username: "Website Visit",
+            content: `🌐 A user has visited the Project Pluto site at ${new Date().toLocaleString()}`
+          };
+
           fetch(data.webhook, {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-              username: "Website Visit",
-              content: `🌐 A user has visited the Dragon Burn site at ${new Date().toLocaleString()}`
-            })
-          });
+            body: JSON.stringify(payload)
+          }).catch(err => console.error("Failed to send webhook:", err));
+        } else {
+          console.warn("Webhook URL missing or invalid in welcome.json");
         }
       })
-      .catch(err => console.error("Webhook error:", err));
+      .catch(err => console.error("Error loading welcome.json or sending webhook:", err));
   </script>
-  
+
 </body>
 </html>
