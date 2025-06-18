@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Thank You - Project Pluto</title>
   <style>
+    /* General Styles */
     body {
       margin: 0;
-      padding-top: 100px;
       font-family: 'Segoe UI', sans-serif;
       background-color: #000;
       color: #fff;
       text-align: center;
+      padding-top: 100px;
       animation: fadeIn 2s ease;
+      overflow: hidden;
     }
 
     h1 {
@@ -47,6 +49,7 @@
       border-radius: 5px;
     }
 
+    /* Notification */
     .notification {
       position: fixed;
       bottom: 20px;
@@ -61,6 +64,9 @@
       transform: translateY(30px);
       transition: opacity 0.5s ease, transform 0.5s ease;
       z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .notification.show {
@@ -73,6 +79,18 @@
       transform: translateY(30px);
     }
 
+    .notification-icon {
+      animation: pulse 1.5s infinite;
+      font-size: 1.3rem;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Patch Notes */
     .patch-notes {
       margin: 100px auto;
       max-width: 800px;
@@ -109,6 +127,23 @@
       background: #333;
     }
 
+    /* Loader */
+    #loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      z-index: 2000;
+      animation: fadeIn 1s ease;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
@@ -143,17 +178,24 @@
 </head>
 <body>
 
-  <h1>Project Pluto</h1>
-  <p>Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
+  <div id="loader">Loading Project Pluto...</div>
 
-  <div id="notification" class="notification">Welcome, user!</div>
+  <h1 style="display: none;">Project Pluto</h1>
+  <p style="display: none;">Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
 
-  <div class="patch-notes">
+  <div id="notification" class="notification">
+    <span class="notification-icon">💬</span>
+    <span class="notification-text">Welcome, user!</span>
+  </div>
+
+  <div class="patch-notes" style="display: none;">
     <h2>Patch Notes</h2>
     <ul>
       <li>🔥 SOON! </li>
     </ul>
   </div>
+
+  <audio id="notif-sound" src="click.wav" preload="auto"></audio>
 
   <script>
     const messages = [
@@ -167,12 +209,15 @@
     ];
 
     const notif = document.getElementById("notification");
+    const notifText = document.querySelector(".notification-text");
+    const notifSound = document.getElementById("notif-sound");
 
     function showNotification() {
       const message = messages[Math.floor(Math.random() * messages.length)];
-      notif.textContent = message;
+      notifText.textContent = message;
       notif.classList.add("show");
       notif.classList.remove("hide");
+      notifSound.play().catch(() => {}); // Ignore autoplay errors
 
       setTimeout(() => {
         notif.classList.remove("show");
@@ -180,11 +225,19 @@
       }, 4000);
     }
 
-    // Start notifications after 5s, show one every 10s
-    setTimeout(() => {
-      showNotification();
-      setInterval(showNotification, 10000);
-    }, 5000);
+    // Page load event
+    window.addEventListener("load", () => {
+      document.getElementById("loader").style.display = "none";
+      document.querySelector("h1").style.display = "block";
+      document.querySelector("p").style.display = "block";
+      document.querySelector(".patch-notes").style.display = "block";
+
+      // Start notification cycle
+      setTimeout(() => {
+        showNotification();
+        setInterval(showNotification, 10000);
+      }, 5000);
+    });
 
     // Webhook sending
     fetch("welcome.json")
