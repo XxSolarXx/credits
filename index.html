@@ -3,18 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Thank You - Project Pluto</title>
+  <title>Thank You - Dragon Burn</title>
   <style>
-    /* General Styles */
     body {
       margin: 0;
+      padding-top: 100px;
       font-family: 'Segoe UI', sans-serif;
       background-color: #000;
       color: #fff;
       text-align: center;
-      padding-top: 100px;
-      animation: fadeIn 2s ease;
       overflow: hidden;
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOutLoading 1s ease 5s forwards;
+    }
+
+    @keyframes spinner {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .spinner {
+      border: 8px solid #444;
+      border-top: 8px solid #fff;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spinner 1s linear infinite;
+      margin-top: 20px;
+    }
+
+    @keyframes fadeOutLoading {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    #main-content {
+      display: none;
+      animation: fadeIn 2s ease;
     }
 
     h1 {
@@ -49,7 +90,6 @@
       border-radius: 5px;
     }
 
-    /* Notification */
     .notification {
       position: fixed;
       bottom: 20px;
@@ -62,35 +102,20 @@
       font-size: 1rem;
       opacity: 0;
       transform: translateY(30px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      z-index: 1000;
       display: flex;
       align-items: center;
       gap: 10px;
+      animation: none;
     }
 
     .notification.show {
-      opacity: 1;
-      transform: translateY(0);
+      animation: fadeInNotif 1s forwards;
     }
 
     .notification.hide {
-      opacity: 0;
-      transform: translateY(30px);
+      animation: fadeOutNotif 1s forwards;
     }
 
-    .notification-icon {
-      animation: pulse 1.5s infinite;
-      font-size: 1.3rem;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* Patch Notes */
     .patch-notes {
       margin: 100px auto;
       max-width: 800px;
@@ -127,23 +152,6 @@
       background: #333;
     }
 
-    /* Loader */
-    #loader {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: #000;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      z-index: 2000;
-      animation: fadeIn 1s ease;
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
@@ -160,6 +168,14 @@
       100% { transform: translateY(0); opacity: 1; }
     }
 
+    @keyframes fadeInNotif {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOutNotif {
+      to { opacity: 0; transform: translateY(30px); }
+    }
+
     @keyframes fadeInScale {
       0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
@@ -174,96 +190,82 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
+
+    .notif-icon {
+      font-size: 1.2rem;
+      animation: bounceIcon 0.8s ease;
+    }
+
+    @keyframes bounceIcon {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
 
-  <div id="loader">Loading Project Pluto...</div>
-
-  <h1 style="display: none;">Project Pluto</h1>
-  <p style="display: none;">Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
-
-  <div id="notification" class="notification">
-    <span class="notification-icon">💬</span>
-    <span class="notification-text">Welcome, user!</span>
+  <div id="loading-screen">
+    <h1>Loading...</h1>
+    <div class="spinner"></div>
   </div>
 
-  <div class="patch-notes" style="display: none;">
-    <h2>Patch Notes</h2>
-    <ul>
-      <li>🔥 SOON! </li>
-    </ul>
+  <div id="main-content">
+    <h1>Dragon Burn</h1>
+    <p>Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
+
+    <div id="notification" class="notification"><span class="notif-icon">🔔</span><span id="notif-text">Welcome, user!</span></div>
+
+    <div class="patch-notes">
+      <h2>Patch Notes</h2>
+      <ul>
+        <li>🔥 SOON! </li>
+      </ul>
+    </div>
   </div>
 
   <audio id="notif-sound" src="click.wav" preload="auto"></audio>
 
   <script>
     const messages = [
-      "Welcome, user!",
       "💡 CS2 runs on the Source 2 engine for better performance.",
       "👨‍💻 Developer is known as Solar!",
-      "👨‍💻 Developer for DragonBurn is known as ByteCorum!",
+      "👨‍💻 Developer for DragonBurn is ByteCorum!",
       "🔥 CS2 uses sub-tick updates for smoother shooting.",
       "🧠 This site was built with love and minimalism.",
       "🎮 Dragon Burn aims for top-tier performance."
     ];
 
+    let index = 0;
     const notif = document.getElementById("notification");
-    const notifText = document.querySelector(".notification-text");
+    const notifText = document.getElementById("notif-text");
     const notifSound = document.getElementById("notif-sound");
 
     function showNotification() {
-      const message = messages[Math.floor(Math.random() * messages.length)];
-      notifText.textContent = message;
-      notif.classList.add("show");
+      notifText.textContent = messages[index];
       notif.classList.remove("hide");
-      notifSound.play().catch(() => {}); // Ignore autoplay errors
+      notif.classList.add("show");
+      notifSound.play().catch(() => {}); // Safe fallback
 
       setTimeout(() => {
         notif.classList.remove("show");
         notif.classList.add("hide");
-      }, 4000);
+      }, 3000);
+
+      index = (index + 1) % messages.length;
     }
 
-    // Page load event
-    window.addEventListener("load", () => {
-      document.getElementById("loader").style.display = "none";
-      document.querySelector("h1").style.display = "block";
-      document.querySelector("p").style.display = "block";
-      document.querySelector(".patch-notes").style.display = "block";
+    // Show notifications every 10 seconds
+    setInterval(showNotification, 10000);
 
-      // Start notification cycle
+    // Wait for 5 seconds then show main content
+    window.addEventListener("load", () => {
       setTimeout(() => {
-        showNotification();
-        setInterval(showNotification, 10000);
+        document.getElementById("loading-screen").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+        showNotification(); // First one immediately
       }, 5000);
     });
-
-    // Webhook sending
-    fetch("welcome.json")
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to load webhook config.");
-        return res.json();
-      })
-      .then(data => {
-        if (data.webhook && typeof data.webhook === "string") {
-          const payload = {
-            username: "Website Visit",
-            content: `🌐 A user has visited the Project Pluto site at ${new Date().toLocaleString()}`
-          };
-
-          fetch(data.webhook, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-          }).catch(err => console.error("Failed to send webhook:", err));
-        } else {
-          console.warn("Webhook URL missing or invalid in welcome.json");
-        }
-      })
-      .catch(err => console.error("Error loading welcome.json or sending webhook:", err));
   </script>
 
 </body>
