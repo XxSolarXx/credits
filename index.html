@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You - Dragon Burn</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      padding-top: 100px;
+      animation: fadeIn 1.5s ease;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin: 0;
+      animation: slideIn 1s ease-out;
+    }
+
+    p {
+      font-size: 1.5rem;
+      margin-top: 10px;
+      animation: slideIn 1.5s ease-out;
+    }
+
+    a {
+      color: #ff6a00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: #ffd700;
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px 25px;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      opacity: 0;
+      animation: fadeInNotif 1s forwards, fadeOutNotif 1s 3s forwards;
+    }
+
+    .patch-notes {
+      margin-top: 100px;
+      width: 90%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .patch-notes h2 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: #ffcc00;
+    }
+
+    .patch-notes ul {
+      list-style: square;
+      padding-left: 20px;
+    }
+
+    .patch-notes li {
+      margin-bottom: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInNotif {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOutNotif {
+      to { opacity: 0; transform: translateY(20px); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Dragon Burn</h1>
+  <p>Thank you <a href="https://github.com/ByteCorum/DragonBurn" target="_blank">https://github.com/ByteCorum/DragonBurn</a></p>
+
+  <div class="notification">Welcome, user!</div>
+
+  <div class="patch-notes">
+    <h2>Patch Notes</h2>
+    <ul>
+      <li>🔥 Improved performance and stability</li>
+      <li>🐛 Fixed minor bugs in the rendering engine</li>
+      <li>✨ Added support for new animations and themes</li>
+      <li>🔧 Updated build system for faster deployment</li>
+      <li>📦 Reduced bundle size by 15%</li>
+    </ul>
+  </div>
+
+</body>
+</html>
