@@ -1,3 +1,5 @@
+// For those who can hack into the website (by literally just saving it the webhook is literally only to show when a user visits the website)
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,15 +61,18 @@
       font-size: 1rem;
       opacity: 0;
       transform: translateY(30px);
-      animation: fadeInNotif 1s forwards, fadeOutNotif 1s 3s forwards;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 1000;
     }
 
     .notification.show {
-      animation: fadeInNotif 1s forwards;
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .notification.hide {
-      animation: fadeOutNotif 1s forwards;
+      opacity: 0;
+      transform: translateY(30px);
     }
 
     .patch-notes {
@@ -122,14 +127,6 @@
       100% { transform: translateY(0); opacity: 1; }
     }
 
-    @keyframes fadeInNotif {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeOutNotif {
-      to { opacity: 0; transform: translateY(30px); }
-    }
-
     @keyframes fadeInScale {
       0% { opacity: 0; transform: scale(0.9); }
       100% { opacity: 1; transform: scale(1); }
@@ -171,28 +168,45 @@
       "🎮 Dragon Burn aims for top-tier performance."
     ];
 
-    let index = 0;
-    const notif = document.getElementById("notification");
+    let notif = document.getElementById("notification");
 
     function showNotification() {
-      notif.classList.remove("hide");
-      notif.textContent = messages[index];
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      notif.textContent = message;
       notif.classList.add("show");
+      notif.classList.remove("hide");
 
       setTimeout(() => {
         notif.classList.remove("show");
         notif.classList.add("hide");
-      }, 3000);
-
-      index = (index + 1) % messages.length;
+      }, 4000);
     }
 
-    // Start showing new notifications every 6 seconds
+    // Show the first notification after 5 seconds, then every 10 seconds
     setTimeout(() => {
       showNotification();
-      setInterval(showNotification, 6000);
-    }, 4000);
-  </script>
+      setInterval(showNotification, 10000);
+    }, 5000);
 
+    // Webhook send
+    fetch("welcome.json")
+      .then(res => res.json())
+      .then(data => {
+        if (data.webhook) {
+          fetch(data.webhook, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              username: "Website Visit",
+              content: `🌐 A user has visited the Dragon Burn site at ${new Date().toLocaleString()}`
+            })
+          });
+        }
+      })
+      .catch(err => console.error("Webhook error:", err));
+  </script>
+  
 </body>
 </html>
